@@ -9,6 +9,8 @@ quotes_quips_lyrics_list = []
 jobs_list = []
 looking_for_list = []
 songs_list = []
+male_name_list = []
+female_name_list = []
 
 def has_sti():
     if random.randint(1,100) <= STI_CHANCE:
@@ -18,6 +20,14 @@ def has_sti():
 
 # Load all bio content from the json files
 def load_bio_content():
+    # Load male names
+    with open("assets/bio/male_names.json", "r") as fd:
+        global male_names_list
+        male_names_list = json.load(fd)
+    # Load female names
+    with open("assets/bio/female_names.json", "r") as fd:
+        global female_names_list
+        female_names_list = json.load(fd)
     # Load likes
     with open("assets/bio/likes.json", "r") as fd:
         global likes_list
@@ -49,8 +59,14 @@ def generate_bio():
         'sti_list': []
     }
 
-    # Generate a name
-    my_bio['name'] = random.choice(["Steve", "Mary"])
+    # Generate a gender
+    my_bio['gender'] = random.choice(["male", "female"])
+
+    # Generate a name based on the gender
+    if my_bio['gender'] == "male":
+        my_bio['name'] = random.choice(male_names_list)
+    else:
+        my_bio['name'] = random.choice(female_names_list)
 
     # Generate an age
     my_bio['age'] = random.randint(18,60)
@@ -66,7 +82,7 @@ def generate_bio():
                 if new_like[0] not in my_bio['likes']:
                     unique = True
                     my_bio['likes'].append(new_like[0])
-                    my_bio['sti_list'].append(new_like)
+                    my_bio['sti_list'].append(("Likes %s" % new_like[0], new_like[1]))
         else:
             while not unique:
                 new_like = random.choice(likes_list['clean'])
@@ -85,7 +101,7 @@ def generate_bio():
                 if new_dislike[0] not in my_bio['dislikes'] and new_dislike[0] not in my_bio['likes']:
                     unique = True
                     my_bio['dislikes'].append(new_dislike[0])
-                    my_bio['sti_list'].append(new_dislike)
+                    my_bio['sti_list'].append(("Dislikes %s" % new_dislike[0], new_dislike[1]))
         else:
             while not unique:
                 new_dislike = random.choice(dislikes_list['clean'])
@@ -98,7 +114,7 @@ def generate_bio():
     if has_sti():
         quote_quip_lyric = random.choice(quotes_quips_lyrics_list['sti'])
         my_bio['quote_quip_lyric'] = quote_quip_lyric[0]
-        my_bio['sti_list'].append(quote_quip_lyric)
+        my_bio['sti_list'].append(("Their profile said '%s'" % quote_quip_lyric[0], quote_quip_lyric[1]))
     else:
         my_bio['quote_quip_lyric'] = random.choice(quotes_quips_lyrics_list['clean'])
 
@@ -107,7 +123,7 @@ def generate_bio():
     if has_sti():
         job = random.choice(jobs_list['sti'])
         my_bio['current_job'] = job[0]
-        my_bio['sti_list'].append(job)
+        my_bio['sti_list'].append(("Their profession was '%s'" % job[0],job[1]))
     else:
         my_bio['current_job'] = random.choice(jobs_list['clean'])
 
@@ -128,7 +144,7 @@ def generate_bio():
     if has_sti():
         looking_for = random.choice(looking_for_list['sti'])
         my_bio['looking_for'] = looking_for[0]
-        my_bio['sti_list'].append(looking_for)
+        my_bio['sti_list'].append(("They were looking for %s" % looking_for[0], looking_for[1]))
     else:
         my_bio['looking_for'] = random.choice(looking_for_list['clean'])
 
@@ -144,7 +160,7 @@ if __name__ == "__main__":
     bio = generate_bio()
 
     # Profile header: name, age, job
-    print("%s, %d") % (bio['name'], bio['age'])
+    print("%s, %d, (%s)") % (bio['name'], bio['age'], bio['gender'])
     print(bio['current_job'])
     print("")
 
@@ -163,4 +179,5 @@ if __name__ == "__main__":
     if len(bio['sti_list']) == 0:
         print("no STI!")
     else:
-        print("Has an STI: %s") % (random.choice(bio['sti_list'])[0])
+        my_sti = random.choice(bio['sti_list'])
+        print("Has an STI: %s (%s)") % (my_sti[0], my_sti[1])
