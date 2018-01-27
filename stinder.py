@@ -120,9 +120,7 @@ class BestCarousel(Carousel):
             self.bad_swipe.play()
             print("REJECTED")
         image = self._load_headshot()
-        self.update_widget(0, Image(source='images/Button_Cross.png'))
         self.update_widget(1, image)
-        self.update_widget(2, Image(source='images/Button_Heart.png'))
         self.index = 1
 
     def __init__(self, bio, **kwargs):
