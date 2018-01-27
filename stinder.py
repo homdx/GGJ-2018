@@ -18,6 +18,10 @@ GENDER = {
     '2': 'female',
 }
 
+good_swipe = []
+bad_swipe = []
+swiping_music = None
+
 class Image(BaseImage):
     def __init__(self, blank=False, allow_stretch=True, keep_ratio=True, **kwargs):
         super(Image, self).__init__(allow_stretch=allow_stretch,
@@ -112,12 +116,11 @@ class BestCarousel(Carousel):
         if len(self.slides) < 3:
             # game isn't ready yet
             return
+        global good_swipe, bad_swipe
         if self.index == 2:
-            self.good_swipe = SoundLoader.load('assets/audio/oh_yeah_1.wav')
-            self.good_swipe.play()
+            random.choice(good_swipe).play()
         elif self.index == 0:
-            self.bad_swipe = SoundLoader.load('assets/audio/boo_1.wav')
-            self.bad_swipe.play()
+            random.choice(bad_swipe).play()
 
         # load next headshot
         image = self._load_headshot()
@@ -131,13 +134,17 @@ class BestCarousel(Carousel):
         # save bio widget for later updating
         self.bio = bio
 
-        # load the audio files
-        self.swiping_music = SoundLoader.load('assets/audio/swiping_music.mp3')
-        self.swiping_music.loop = True
-        self.swiping_music.volume = 0.2
-        self.swiping_music.play()
-        self.good_swipe = SoundLoader.load('assets/audio/oh_yeah_1.wav')
-        self.bad_swipe = SoundLoader.load('assets/audio/boo_1.wav')
+        # load the moosic
+        global swiping_music
+        swiping_music = SoundLoader.load('assets/audio/swiping_music.mp3')
+        swiping_music.loop = True
+        swiping_music.volume = 0.2
+        swiping_music.play()
+
+        # Load the audio effect
+        global good_swipe, bad_swipe
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_1.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_1.wav'))
 
         # call the superclass init function
         super(BestCarousel, self).__init__(**kwargs)
