@@ -13,9 +13,9 @@ from kivy.core.audio import SoundLoader
 
 HEADSHOTS = {}
 GENDER = {
-    '0': 'Unisex',
-    '1': 'Male',
-    '2': 'Female',
+    '0': 'unisex',
+    '1': 'male',
+    '2': 'female',
 }
 
 class Image(BaseImage):
@@ -74,16 +74,12 @@ class BestCarousel(Carousel):
 
         #print("stack")
         for layer, index in enumerate(sorted(HEADSHOTS.keys())):
-            #XXX DEBUG
-            #if layer == 1:
-            #    break
-            item = random.randrange(len(HEADSHOTS[index]))
-            #print(HEADSHOTS[index][item]['filename'])
-            if layer == 0:
-                image1 = Image(source=HEADSHOTS[index][item]['filename'])
-            else:
-                image1.blit_img(
-                        Image(source=HEADSHOTS[index][item]['filename']))
+            options = len(HEADSHOTS[index][self.bio_data['gender']])
+            if options == 0:
+                continue
+            item = random.randrange(options)
+            filename = HEADSHOTS[index][self.bio_data['gender']][item]['filename']
+            image1.blit_img(Image(source=filename))
 
         return image1
 
@@ -143,11 +139,18 @@ class StinderApp(App):
             m = match.match(filename)
             if m:
                 index = int(m.group(1))
+                gender = GENDER[m.group(2)]
                 if index not in HEADSHOTS:
-                    HEADSHOTS[index] = []
-                HEADSHOTS[index].append({
-                    'filename':'images/%s' % filename,
-                    'gender':GENDER[m.group(2)]
+                    HEADSHOTS[index] = {}
+                    HEADSHOTS[index]['male'] = []
+                    HEADSHOTS[index]['female'] = []
+                if gender == 'male' or gender == 'unisex':
+                    HEADSHOTS[index]['male'].append({
+                        'filename':'images/%s' % filename,
+                })
+                if gender == 'female' or gender == 'unisex':
+                    HEADSHOTS[index]['female'].append({
+                        'filename':'images/%s' % filename,
                 })
 
         print(HEADSHOTS)
