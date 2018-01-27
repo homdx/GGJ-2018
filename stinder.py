@@ -7,6 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.carousel import Carousel
 from kivy.uix.widget import Widget
+from kivy.uix.button import Button
 from kivy.uix.image import Image as BaseImage
 from kivy.core.window import Window
 from kivy.core.audio import SoundLoader
@@ -17,6 +18,53 @@ GENDER = {
     '1': 'male',
     '2': 'female',
 }
+
+class rootWidget(BoxLayout):
+    def __init__(self, **kwargs):
+        super(rootWidget, self).__init__(**kwargs)
+
+    def clear_windows(self):
+        for child in self.children:
+            self.remove_widget(child)
+
+    def run_game(self):
+        # build head shot file list
+        match = re.compile(r'([0-9]+)_([0-9]+)_.*\.png')
+        for filename in os.listdir('images'):
+            m = match.match(filename)
+            if m:
+                index = int(m.group(1))
+                gender = GENDER[m.group(2)]
+                if index not in HEADSHOTS:
+                    HEADSHOTS[index] = {}
+                    HEADSHOTS[index]['male'] = []
+                    HEADSHOTS[index]['female'] = []
+                if gender == 'male' or gender == 'unisex':
+                    HEADSHOTS[index]['male'].append({
+                        'filename':'images/%s' % filename,
+                })
+                if gender == 'female' or gender == 'unisex':
+                    HEADSHOTS[index]['female'].append({
+                        'filename':'images/%s' % filename,
+                })
+
+        root = BetterBoxLayout(orientation='vertical')
+        self.bio = TextBox(text="" , markup=True, font_size='20sp')
+
+        self.carousel = BestCarousel(self.bio,
+                direction='right', min_move=0.4, loop=True)
+
+        root.add_widget(self.carousel)
+
+        bio = BetterBoxLayout(orientation='vertical')
+
+        root.add_widget(bio)
+
+        bio.add_widget(self.bio)
+
+        self.clear_windows()
+
+        self.add_widget(root)
 
 class Image(BaseImage):
     def __init__(self, blank=False, allow_stretch=True, keep_ratio=True, **kwargs):
@@ -151,50 +199,34 @@ class BestCarousel(Carousel):
         self.add_widget(Image(source='images/Button_Heart.png'))
         self.index = 1
 
+class StartSplash(Image):
+    def __init__(self, **kwargs):
+        super(StartSplash, self).__init__(**kwargs)
+
+class BetterBoxLayout(BoxLayout):
+    pass
+
+class StartGameButton(Button):
+    def on_press(self):
+        window = self.get_root_window()
+        root = window.children[0]
+        root.run_game()
+
 class TextBox(Label):
     pass
 
 class StinderApp(App):
 
     def build(self):
+        root = rootWidget()
 
-        # build head shot file list
-        match = re.compile(r'([0-9]+)_([0-9]+)_.*\.png')
-        for filename in os.listdir('images'):
-            m = match.match(filename)
-            if m:
-                index = int(m.group(1))
-                gender = GENDER[m.group(2)]
-                if index not in HEADSHOTS:
-                    HEADSHOTS[index] = {}
-                    HEADSHOTS[index]['male'] = []
-                    HEADSHOTS[index]['female'] = []
-                if gender == 'male' or gender == 'unisex':
-                    HEADSHOTS[index]['male'].append({
-                        'filename':'images/%s' % filename,
-                })
-                if gender == 'female' or gender == 'unisex':
-                    HEADSHOTS[index]['female'].append({
-                        'filename':'images/%s' % filename,
-                })
+        start_splash = StartSplash(source="images/STinder.png")
+
+        Window.size = (Window.height / 2, Window.height)
 
         # set the background to white
         Window.clearcolor = (1, 1, 1, 0)
 
-        Window.size = (Window.height / 2, Window.height)
-
-        root = BoxLayout(orientation='vertical')
-        self.bio = TextBox(text="" , markup=True, font_size='20sp')
-
-        self.carousel = BestCarousel(self.bio,
-                direction='right', min_move=0.4, loop=True)
-
-        root.add_widget(self.carousel)
-
-        bio = BoxLayout(orientation='vertical')
-
-        root.add_widget(bio)
-
-        bio.add_widget(self.bio)
+        root.add_widget(start_splash)
 
         return root
