@@ -3,6 +3,7 @@ import os, re, random
 import stinder_profile as profile
 
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.carousel import Carousel
@@ -204,4 +205,15 @@ class StinderApp(App):
 
         bio.add_widget(self.bio)
 
+        self.new_timer()
+        Clock.schedule_interval(self.decrease_timer, 1)
+
         return root
+
+    def decrease_timer(self, dt):
+        if self.timer_value > 0:
+            self.timer_value = self.timer_value - 1
+            print(self.timer_value)
+
+    def new_timer(self):
+        self.timer_value = 120
