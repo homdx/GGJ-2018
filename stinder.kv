@@ -1,7 +1,33 @@
 #:kivy 1.0.9
 
+
+<StartGameButton>:
+    canvas:
+        Ellipse:
+            pos: self.pos
+            size: self.size
+
+<StartSplash>:
+    size: root.size
+	StartGameButton:
+		center: self.parent.center
+
 <TextBox>:
     size_hint_y: None
     text_size: self.width, None
     height: self.texture_size[1]
+
+<BetterBoxLayout>:
+    size: root.size
+    canvas:
+        Rectangle:
+            pos: 0, 0
+            size: root.size
+
+<BestCarousel>:
+    size: root.size
+    canvas:
+        Rectangle:
+            pos: 0, 0
+            size: root.size
 
