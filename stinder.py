@@ -9,6 +9,7 @@ from kivy.uix.carousel import Carousel
 from kivy.uix.widget import Widget
 from kivy.uix.image import Image as BaseImage
 from kivy.core.window import Window
+from kivy.core.audio import SoundLoader
 
 HEADSHOTS = {}
 GENDER = {
@@ -109,7 +110,11 @@ class BestCarousel(Carousel):
 
     def __init__(self, **kwargs):
         print("__init__")
+        # load the audio files
         super(BestCarousel, self).__init__(**kwargs)
+        self.swiping_music = SoundLoader.load('assets/audio/swiping_music.mp3')
+        self.swiping_music.loop = True
+        self.swiping_music.play()
         image = self._load_headshot()
         self.add_widget(Image(source='images/Button_Cross.png'))
         self.add_widget(image)
@@ -164,4 +169,3 @@ class StinderApp(App):
         bio.add_widget(self.bio)
 
         return root
-
