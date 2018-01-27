@@ -121,6 +121,9 @@ class BestCarousel(Carousel):
         self.add_widget(Image(source='images/Button_Heart.png'))
         self.index = 1
 
+class TextBox(Label):
+    pass
+
 class StinderApp(App):
 
     def build(self):
@@ -161,10 +164,8 @@ class StinderApp(App):
 
         bio_data = profile.generate_bio()
         print(bio_data['name'])
-        self.bio = Label(text="[color=3333ff]%s[/color]" %
+        self.bio = TextBox(text="[color=000000]%s[/color]" %
             profile.format_bio(bio_data), markup=True, font_size='20sp')
-        self.bio.text_size = (self.bio.width, None)
-        self.bio.texture_size = self.bio.text_size
 
         bio.add_widget(self.bio)
 
