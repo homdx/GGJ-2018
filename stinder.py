@@ -1,6 +1,6 @@
 import os, re, random
 
-import profile
+import stinder_profile as profile
 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
