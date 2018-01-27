@@ -201,9 +201,6 @@ class BestCarousel(Carousel):
 
         # load the moosic
         global menu_music, transition_music, swiping_loop
-        menu_music = SoundLoader.load('assets/audio/menu_music.mp3')
-        menu_music.loop = True
-        menu_music.volume = 0.1
         swiping_loop = SoundLoader.load('assets/audio/swiping_loop.wav')
         swiping_loop.loop = False
         swiping_loop.volume = 0.2
@@ -212,6 +209,9 @@ class BestCarousel(Carousel):
         transition_music.loop = False
         transition_music.volume = 0.1
         transition_music.on_stop = self.play_loop_music
+
+        # stop the menu music
+        menu_music.stop()
 
         # play the transition music
         transition_music.play()
@@ -271,6 +271,10 @@ class Game(BetterBoxLayout):
 class StartSplash(Image):
     def __init__(self, **kwargs):
         super(StartSplash, self).__init__(**kwargs)
+        global menu_music
+        menu_music = SoundLoader.load('assets/audio/menu_music.mp3')
+        menu_music.volume = 0.1
+        menu_music.play()
 
 class StartGameButton(Button):
     def on_press(self):

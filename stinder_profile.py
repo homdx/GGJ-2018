@@ -12,6 +12,52 @@ songs_list = []
 male_names_list = []
 female_names_list = []
 
+# Easter egg profiles
+# Ronnie 'the rocket' Baxter (our Random Wikipedia diversifier)
+# Vlad putin, just because (Dear KGB - please don't assassinate us <3)
+easter_eggs = [
+    {
+        "name": "Vladimir 'Platov' Putin",
+        "age": 65,
+        "gender": "putin",
+        "likes": [
+            "politics",
+            "topless horse riding",
+            "taking photos with drugged up tigers"
+        ],
+        "dislikes": [
+            "democracy",
+            "Crimean independence"
+        ],
+        "looking_for": "some Netflix and chill",
+        "quote_quip_lyric": "All of Russia would date me, how 'bout you?",
+        "fav_song": "'Go Hard Like Vladimir Putin' - K King and Beni Maniaci",
+        "current_job": "Politician",
+        "dream_job": "Supreme leader of the whole world, baby",
+        "sti_list": [("likes topless horse riding", "You think horses are all he rides?")]
+    },
+    {
+        "name": "Ronnie 'The Rocket' Baxter",
+        "age": 56,
+        "gender": "ronnie",
+        "likes": [
+            "darts",
+            "beer",
+            "fish"
+        ],
+        "dislikes": [
+            "wine",
+            "Rod Harrington"
+        ],
+        "looking_for": "a long term friendship",
+        "quote_quip_lyric": "'I still think I’m the greatest' - Kanye West",
+        "fav_song": "'Don’t Stop Me Now' - Queen",
+        "current_job": "Professional Athlete",
+        "dream_job": "literal dart board",
+        "sti_list": []
+    }
+]
+
 def has_sti():
     if random.randint(1,100) <= STI_CHANCE:
         return True
@@ -55,6 +101,12 @@ def load_bio_content():
 
 # Generate and return a new bio
 def generate_bio():
+
+    # Random chance to get one of the easter egg profiles
+    if random.randint(1,100) == 10:
+        return random.choice(easter_eggs)
+
+    # Initialise the bio
     my_bio = {
         'sti_list': []
     }
