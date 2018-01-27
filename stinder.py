@@ -71,8 +71,9 @@ class Image(BaseImage):
         super(Image, self).__init__(allow_stretch=allow_stretch,
                 keep_ratio=keep_ratio, **kwargs)
         # prevent interpolation when we scale up the image
-        self.texture.min_filter = 'nearest'
-        self.texture.mag_filter = 'nearest'
+        if self.texture != None:
+            self.texture.min_filter = 'nearest'
+            self.texture.mag_filter = 'nearest'
         # deal with blanking the entire image
         if blank:
             self._blank()
