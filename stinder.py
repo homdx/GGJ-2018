@@ -112,11 +112,11 @@ class BestCarousel(Carousel):
             print("SKIP")
             return
         if self.index == 2:
-            #self.good_swipe = SoundLoader.load('assets/audio/oh_yeah_1')
+            self.good_swipe = SoundLoader.load('assets/audio/oh_yeah_1.wav')
             self.good_swipe.play()
             print("POUND TOWN")
         elif self.index == 0:
-            #self.bad_swipe = SoundLoader.load('assets/audio/boo_1')
+            self.bad_swipe = SoundLoader.load('assets/audio/boo_1.wav')
             self.bad_swipe.play()
             print("REJECTED")
         image = self._load_headshot()
