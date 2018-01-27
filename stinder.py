@@ -89,13 +89,15 @@ class BestCarousel(Carousel):
 
     def _load_headshot(self):
 
+        # update bio data
         self.bio_data = profile.generate_bio()
         self.bio.text = "[color=000000]%s[/color]" % \
                                 profile.format_bio(self.bio_data)
 
-        #print("stack")
         # blank image
         image1 = Image(source='images/blank.png', blank=True)
+
+        # build avatar
         for layer, index in enumerate(sorted(HEADSHOTS.keys())):
             options = len(HEADSHOTS[index][self.bio_data['gender']])
             if options == 0:
@@ -109,23 +111,24 @@ class BestCarousel(Carousel):
     def _next_item(self):
         if len(self.slides) < 3:
             # game isn't ready yet
-            print("SKIP")
             return
         if self.index == 2:
             self.good_swipe = SoundLoader.load('assets/audio/oh_yeah_1.wav')
             self.good_swipe.play()
-            print("POUND TOWN")
         elif self.index == 0:
             self.bad_swipe = SoundLoader.load('assets/audio/boo_1.wav')
             self.bad_swipe.play()
-            print("REJECTED")
+
+        # load next headshot
         image = self._load_headshot()
         self.update_widget(1, image)
+
+        # reset to slide 1
         self.index = 1
 
     def __init__(self, bio, **kwargs):
-        print("__init__")
 
+        # save bio widget for later updating
         self.bio = bio
 
         # load the audio files
@@ -136,9 +139,10 @@ class BestCarousel(Carousel):
         self.good_swipe = SoundLoader.load('assets/audio/oh_yeah_1.wav')
         self.bad_swipe = SoundLoader.load('assets/audio/boo_1.wav')
 
+        # call the superclass init function
         super(BestCarousel, self).__init__(**kwargs)
 
-        # load the bios content into the module
+        # load the bio content options into the module
         profile.load_bio_content()
 
         # set up the slide widgets in the carousel
@@ -173,8 +177,6 @@ class StinderApp(App):
                     HEADSHOTS[index]['female'].append({
                         'filename':'images/%s' % filename,
                 })
-
-        print(HEADSHOTS)
 
         # set the background to white
         Window.clearcolor = (1, 1, 1, 0)
