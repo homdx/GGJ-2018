@@ -34,6 +34,14 @@ class rootWidget(BoxLayout):
         for child in self.children:
             self.remove_widget(child)
 
+    def show_splash(self):
+        self.clear_windows()
+
+        start_splash = StartSplash(source="images/STinder.png")
+
+
+        self.add_widget(start_splash)
+
     def run_game(self):
         # build head shot file list
         match = re.compile(r'([0-9]+)_([0-9]+)_.*\.png')
@@ -245,12 +253,13 @@ class BestCarousel(Carousel):
         self.add_widget(Image(source='images/Button_Heart.png'))
         self.index = 1
 
-class StartSplash(Image):
-    def __init__(self, **kwargs):
-        super(StartSplash, self).__init__(**kwargs)
 
 class BetterBoxLayout(BoxLayout):
     pass
+
+class StartSplash(Image):
+    def __init__(self, **kwargs):
+        super(StartSplash, self).__init__(**kwargs)
 
 class StartGameButton(Button):
     def on_press(self):
@@ -266,14 +275,12 @@ class StinderApp(App):
     def build(self):
         root = rootWidget()
 
-        start_splash = StartSplash(source="images/STinder.png")
-
         Window.size = (Window.height / 2, Window.height)
 
         # set the background to white
         Window.clearcolor = (1, 1, 1, 0)
 
-        root.add_widget(start_splash)
+        root.show_splash()
 
         # Initialise score and timer
         self.new_timer()
