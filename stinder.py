@@ -82,11 +82,6 @@ class BestCarousel(Carousel):
                 image1.blit_img(
                         Image(source=HEADSHOTS[index][item]['filename']))
 
-        for i in self.children:
-            print(i)
-            for j in i.children:
-                print(j)
-
         return image1
 
     def _next_item(self):
