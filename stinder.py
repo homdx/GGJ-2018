@@ -94,19 +94,15 @@ class BestCarousel(Carousel):
             # game isn't ready yet
             print("SKIP")
             return
+        if self.index == 2:
+            print("POUND TOWN")
+        elif self.index == 0:
+            print("REJECTED")
         image = self._load_headshot()
-        self.update_widget(self.index, image)
-        index= self.index
-        if index -1 < 0:
-            index = 2
-        else:
-            index = index -1
-        self.update_widget(index, Image(source='images/Button_Cross.png'))
-        if index -1 < 0:
-            index = 2
-        else:
-            index = index -1
-        self.update_widget(index, Image(source='images/Button_Heart.png'))
+        self.update_widget(0, Image(source='images/Button_Cross.png'))
+        self.update_widget(1, image)
+        self.update_widget(2, Image(source='images/Button_Heart.png'))
+        self.index = 1
 
     def __init__(self, **kwargs):
         print("__init__")
