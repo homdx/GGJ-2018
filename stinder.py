@@ -1,13 +1,27 @@
+import os, re, random
+
+import profile
+
 from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
 from kivy.uix.carousel import Carousel
 from kivy.uix.widget import Widget
 from kivy.uix.image import Image as BaseImage
 from kivy.core.window import Window
 
+HEADSHOTS = {}
+GENDER = {
+    '0': 'Unisex',
+    '1': 'Male',
+    '2': 'Female',
+}
+
 class Image(BaseImage):
     def __init__(self, allow_stretch=True, keep_ratio=True, **kwargs):
         super(Image, self).__init__(allow_stretch=allow_stretch,
                 keep_ratio=keep_ratio, **kwargs)
+        # prevent interpolation when we scale up the image
         self.texture.min_filter = 'nearest'
         self.texture.mag_filter = 'nearest'
 
@@ -21,7 +35,7 @@ class Image(BaseImage):
             if v != 0:
                 pixels1[i] = v
 
-        tex = self.texture
+        tex = img.texture
         self.texture.blit_buffer(pixels1, colorfmt=tex.colorfmt,
                 bufferfmt=tex.bufferfmt)
 
@@ -50,50 +64,104 @@ class BestCarousel(Carousel):
         # and replace the widget in the slides list
         self.slides[index] = widget
 
-    def _load_image(self, src):
+    def _load_headshot(self):
 
-        image1 = Image(source=src)
+        image1 = None
 
-        image2 = Image(source="images/10_1_Face_Tan.png")
+        #print("stack")
+        for layer, index in enumerate(sorted(HEADSHOTS.keys())):
+            #XXX DEBUG
+            #if layer == 1:
+            #    break
+            item = random.randrange(len(HEADSHOTS[index]))
+            #print(HEADSHOTS[index][item]['filename'])
+            if layer == 0:
+                image1 = Image(source=HEADSHOTS[index][item]['filename'])
+            else:
+                image1.blit_img(
+                        Image(source=HEADSHOTS[index][item]['filename']))
 
-        image1.blit_img(image2)
+        for i in self.children:
+            print(i)
+            for j in i.children:
+                print(j)
 
         return image1
 
-    def _next_item(self, init=False):
-        if len(self.slides) < 2:
+    def _next_item(self):
+        if len(self.slides) < 3:
             # game isn't ready yet
+            print("SKIP")
             return
-        for index in range(len(self.slides)):
-            if init == False and index == self.index:
-                continue
-            image = self._build_headshot()
-            self.update_widget(index, image)
-
-    def _build_headshot(self):
-        src = "images/0_1_Shirt_Blue.png"
-        image = self._load_image(src)
-        return image
+        image = self._load_headshot()
+        self.update_widget(self.index, image)
+        index= self.index
+        if index -1 < 0:
+            index = 2
+        else:
+            index = index -1
+        self.update_widget(index, Image(source='images/Button_Cross.png'))
+        if index -1 < 0:
+            index = 2
+        else:
+            index = index -1
+        self.update_widget(index, Image(source='images/Button_Heart.png'))
 
     def __init__(self, **kwargs):
         print("__init__")
         super(BestCarousel, self).__init__(**kwargs)
-        while len(self.slides) < 2:
-            src = "images/Hulk Hogan.png"
-            image = self._load_image(src)
-            self.add_widget(image)
-        self._next_item(init=True)
+        image = self._load_headshot()
+        self.add_widget(Image(source='images/Button_Cross.png'))
+        self.add_widget(image)
+        self.add_widget(Image(source='images/Button_Heart.png'))
+        self.index = 1
 
 class StinderApp(App):
 
     def build(self):
 
+        # load the bios
+        profile.load_bio_content()
+
+        # build head shot file list
+        match = re.compile(r'([0-9]+)_([0-9]+)_.*\.png')
+        for filename in os.listdir('images'):
+            m = match.match(filename)
+            if m:
+                index = int(m.group(1))
+                if index not in HEADSHOTS:
+                    HEADSHOTS[index] = []
+                HEADSHOTS[index].append({
+                    'filename':'images/%s' % filename,
+                    'gender':GENDER[m.group(2)]
+                })
+
+        print(HEADSHOTS)
+
         # set the background to white
-        Window.clearcolor = (1, 1, 1, 1)
+        Window.clearcolor = (1, 1, 1, 0)
 
-        # start BestCarousel
+        Window.size = (Window.height / 2, Window.height)
+
+        root = BoxLayout(orientation='vertical')
+
         self.carousel = BestCarousel(
-                direction='right', min_move=0.1, loop=True)
+                direction='right', min_move=0.4, loop=True)
 
-        return self.carousel
+        root.add_widget(self.carousel)
+
+        bio = BoxLayout(orientation='vertical')
+
+        root.add_widget(bio)
+
+        bio_data = profile.generate_bio()
+        print(bio_data['name'])
+        self.bio = Label(text="[color=3333ff]%s[/color]" %
+            profile.format_bio(bio_data), markup=True, font_size='20sp')
+        self.bio.text_size = (self.bio.width, None)
+        self.bio.texture_size = self.bio.text_size
+
+        bio.add_widget(self.bio)
+
+        return root
 

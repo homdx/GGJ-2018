@@ -155,23 +155,46 @@ def generate_bio():
     # Return the new bio
     return my_bio
 
+def format_bio(bio):
+    # Profile header: name, age, job
+    out = ""
+    out += "%s, %d\n" % (bio['name'], bio['age'])
+    out += (bio['current_job'])
+    out += ("\n\n")
+
+    # Profile body
+    if "likes" in bio:
+        out += ("I'm into %s, %s, and %s\n" % tuple(bio['likes']))
+        out += ("Swipe left if you're into %s or %s\n" % tuple(bio['dislikes']))
+    if "dream_job" in bio:
+        out += ("My dream job is to be a %s\n" % bio['dream_job'])
+        out += ("\n")
+    if "looking_for" in bio:
+        out += ("Looking for %s\n" % bio['looking_for'])
+        out += ("\n")
+    if "quote_quip_lyric" in bio:
+        out += (bio['quote_quip_lyric'])
+        out += ("\n")
+
+    return out
+
 if __name__ == "__main__":
     load_bio_content()
     bio = generate_bio()
 
     # Profile header: name, age, job
-    print("%s, %d, (%s)") % (bio['name'], bio['age'], bio['gender'])
+    print("%s, %d, (%s)" % (bio['name'], bio['age'], bio['gender']))
     print(bio['current_job'])
     print("")
 
     # Profile body
     if "likes" in bio:
-        print("I'm into %s, %s, and %s") % tuple(bio['likes'])
-        print("Swipe left if you're into %s or %s") % tuple(bio['dislikes'])
+        print("I'm into %s, %s, and %s" % tuple(bio['likes']))
+        print("Swipe left if you're into %s or %s" % tuple(bio['dislikes']))
     if "dream_job" in bio:
-        print("My dream job is to be a %s") % bio['dream_job']
+        print("My dream job is to be a %s" % bio['dream_job'])
     if "looking_for" in bio:
-        print("Looking for %s") % bio['looking_for']
+        print("Looking for %s" % bio['looking_for'])
     if "quote_quip_lyric" in bio:
         print(bio['quote_quip_lyric'])
 
@@ -180,4 +203,4 @@ if __name__ == "__main__":
         print("no STI!")
     else:
         my_sti = random.choice(bio['sti_list'])
-        print("Has an STI: %s (%s)") % (my_sti[0], my_sti[1])
+        print("Has an STI: %s (%s)" % (my_sti[0], my_sti[1]))
