@@ -146,10 +146,10 @@ class BestCarousel(Carousel):
         global menu_music, transition_music, swiping_loop
         menu_music = SoundLoader.load('assets/audio/menu_music.mp3')
         menu_music.loop = True
-        menu_music.volume = 0.2
+        menu_music.volume = 0.1
         swiping_loop = SoundLoader.load('assets/audio/swiping_loop.wav')
         swiping_loop.loop = False
-        swiping_loop.volume = 0.1
+        swiping_loop.volume = 0.2
         swiping_loop.on_stop = self.play_loop_music
         transition_music = SoundLoader.load('assets/audio/loop_transition.wav')
         transition_music.loop = False
@@ -158,9 +158,12 @@ class BestCarousel(Carousel):
 
         # play the transition music
         transition_music.play()
+        while transition_music.get_pos() < 2.42:
+            pass
+        swiping_loop.play()
 
-        # Load the audio effect
-        global good_swipe, bad_swipe
+        # Load the audio effects
+        global good_swipe, bad_swipe, wilhelm
         good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_1.wav'))
         good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_2.wav'))
         good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_3.wav'))
@@ -168,6 +171,7 @@ class BestCarousel(Carousel):
         good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_5.wav'))
         good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_6.wav'))
         good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_7.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_8.wav'))
         bad_swipe.append(SoundLoader.load('assets/audio/boo_1.wav'))
         bad_swipe.append(SoundLoader.load('assets/audio/boo_2.wav'))
         bad_swipe.append(SoundLoader.load('assets/audio/boo_3.wav'))
@@ -178,6 +182,7 @@ class BestCarousel(Carousel):
         bad_swipe.append(SoundLoader.load('assets/audio/boo_8.wav'))
         bad_swipe.append(SoundLoader.load('assets/audio/boo_9.wav'))
         bad_swipe.append(SoundLoader.load('assets/audio/boo_10.wav'))
+        welhelm = SoundLoader.load('assets/audio/wilhelm.wav')
 
         # call the superclass init function
         super(BestCarousel, self).__init__(**kwargs)
