@@ -134,12 +134,7 @@ def generate_bio():
 
     # Generate a favourite song
     global songs_list
-    if has_sti():
-        fave_song = random.choice(songs_list['sti'])
-        my_bio['fav_song'] = fave_song[0]
-        my_bio['sti_list'].append(fave_song)
-    else:
-        my_bio['fav_song'] = random.choice(songs_list['clean'])
+    my_bio['fav_song'] = random.choice(songs_list['clean'])
 
     # Return the new bio
     return my_bio
