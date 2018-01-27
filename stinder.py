@@ -3,6 +3,7 @@ import os, re, random
 import stinder_profile as profile
 
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.carousel import Carousel
@@ -18,6 +19,12 @@ GENDER = {
     '1': 'male',
     '2': 'female',
 }
+
+good_swipe = []
+bad_swipe = []
+swiping_loop = None
+transition_music = None
+menu_music = None
 
 class rootWidget(BoxLayout):
     def __init__(self, **kwargs):
@@ -119,6 +126,11 @@ class BestCarousel(Carousel):
         super(BestCarousel, self).on_index(*args)
         self._next_item()
 
+    def play_loop_music(self):
+        global swiping_loop
+        swiping_loop.volume = 0.1
+        swiping_loop.play()
+
     def update_widget(self, index, widget):
 
         # get the old widget from this index
@@ -161,12 +173,11 @@ class BestCarousel(Carousel):
         if len(self.slides) < 3:
             # game isn't ready yet
             return
+        global good_swipe, bad_swipe
         if self.index == 2:
-            self.good_swipe = SoundLoader.load('assets/audio/oh_yeah_1.wav')
-            self.good_swipe.play()
+            random.choice(good_swipe).play()
         elif self.index == 0:
-            self.bad_swipe = SoundLoader.load('assets/audio/boo_1.wav')
-            self.bad_swipe.play()
+            random.choice(bad_swipe).play()
 
         # load next headshot
         image = self._load_headshot()
@@ -180,13 +191,47 @@ class BestCarousel(Carousel):
         # save bio widget for later updating
         self.bio = bio
 
-        # load the audio files
-        self.swiping_music = SoundLoader.load('assets/audio/swiping_music.mp3')
-        self.swiping_music.loop = True
-        self.swiping_music.volume = 0.2
-        self.swiping_music.play()
-        self.good_swipe = SoundLoader.load('assets/audio/oh_yeah_1.wav')
-        self.bad_swipe = SoundLoader.load('assets/audio/boo_1.wav')
+        # load the moosic
+        global menu_music, transition_music, swiping_loop
+        menu_music = SoundLoader.load('assets/audio/menu_music.mp3')
+        menu_music.loop = True
+        menu_music.volume = 0.1
+        swiping_loop = SoundLoader.load('assets/audio/swiping_loop.wav')
+        swiping_loop.loop = False
+        swiping_loop.volume = 0.2
+        swiping_loop.on_stop = self.play_loop_music
+        transition_music = SoundLoader.load('assets/audio/loop_transition.wav')
+        transition_music.loop = False
+        transition_music.volume = 0.1
+        transition_music.on_stop = self.play_loop_music
+
+        # play the transition music
+        transition_music.play()
+        while transition_music.get_pos() < 2.42:
+            pass
+        swiping_loop.play()
+
+        # Load the audio effects
+        global good_swipe, bad_swipe, wilhelm
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_1.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_2.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_3.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_4.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_5.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_6.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_7.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_8.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_1.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_2.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_3.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_4.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_5.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_6.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_7.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_8.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_9.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_10.wav'))
+        welhelm = SoundLoader.load('assets/audio/wilhelm.wav')
 
         # call the superclass init function
         super(BestCarousel, self).__init__(**kwargs)
@@ -230,4 +275,24 @@ class StinderApp(App):
 
         root.add_widget(start_splash)
 
+        # Initialise score and timer
+        self.new_timer()
+        self.new_score()
+
+        # Start decreasing the timer every 1 second
+        Clock.schedule_interval(self.decrease_timer, 1)
+
         return root
+
+    def new_score(self):
+        self.score = 0
+
+    def increase_score(self):
+        self.score += 1
+
+    def decrease_timer(self, dt):
+        if self.timer_value > 0:
+            self.timer_value -= 1
+
+    def new_timer(self):
+        self.timer_value = 120
