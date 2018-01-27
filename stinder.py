@@ -32,9 +32,15 @@ class Image(BaseImage):
         """
         pixels1 = bytearray(self.texture.pixels)
         pixels2 = bytearray(img.texture.pixels)
-        for i, v in enumerate(pixels2):
-            if v != 0:
-                pixels1[i] = v
+
+        for i in range(0, len(pixels2), 4):
+            if pixels2[i] == 0 and pixels2[i+1] == 0 and pixels2[i+2] == 0 \
+                    and pixels2[i+3] != 255:
+                continue
+            pixels1[i] = pixels2[i]
+            pixels1[i+1] = pixels2[i+1]
+            pixels1[i+2] = pixels2[i+2]
+            pixels1[i+3] = 255
 
         tex = img.texture
         self.texture.blit_buffer(pixels1, colorfmt=tex.colorfmt,
