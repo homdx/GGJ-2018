@@ -90,8 +90,12 @@ class BestCarousel(Carousel):
             print("SKIP")
             return
         if self.index == 2:
+            #self.good_swipe = SoundLoader.load('assets/audio/oh_yeah_1')
+            self.good_swipe.play()
             print("POUND TOWN")
         elif self.index == 0:
+            #self.bad_swipe = SoundLoader.load('assets/audio/boo_1')
+            self.bad_swipe.play()
             print("REJECTED")
         image = self._load_headshot()
         self.update_widget(0, Image(source='images/Button_Cross.png'))
@@ -102,10 +106,13 @@ class BestCarousel(Carousel):
     def __init__(self, **kwargs):
         print("__init__")
         # load the audio files
-        super(BestCarousel, self).__init__(**kwargs)
         self.swiping_music = SoundLoader.load('assets/audio/swiping_music.mp3')
         self.swiping_music.loop = True
+        self.swiping_music.volume = 0.2
         self.swiping_music.play()
+        self.good_swipe = SoundLoader.load('assets/audio/oh_yeah_1.wav')
+        self.bad_swipe = SoundLoader.load('assets/audio/boo_1.wav')
+        super(BestCarousel, self).__init__(**kwargs)
         image = self._load_headshot()
         self.add_widget(Image(source='images/Button_Cross.png'))
         self.add_widget(image)
