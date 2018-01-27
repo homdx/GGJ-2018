@@ -19,12 +19,28 @@ GENDER = {
 }
 
 class Image(BaseImage):
-    def __init__(self, allow_stretch=True, keep_ratio=True, **kwargs):
+    def __init__(self, blank=False, allow_stretch=True, keep_ratio=True, **kwargs):
         super(Image, self).__init__(allow_stretch=allow_stretch,
                 keep_ratio=keep_ratio, **kwargs)
         # prevent interpolation when we scale up the image
         self.texture.min_filter = 'nearest'
         self.texture.mag_filter = 'nearest'
+        # deal with blanking the entire image
+        if blank:
+            self._blank()
+
+    def _blank(self):
+        """
+        blank the entire image
+        """
+        pixels1 = bytearray(self.texture.pixels)
+        for i in range(0, len(pixels1), 4):
+            pixels1[i] = 255
+            pixels1[i+1] = 255
+            pixels1[i+2] = 255
+            pixels1[i+3] = 255
+        self.texture.blit_buffer(pixels1, colorfmt=self.texture.colorfmt,
+                bufferfmt=self.texture.bufferfmt)
 
     def blit_img(self, img):
         """
@@ -76,9 +92,10 @@ class BestCarousel(Carousel):
         self.bio_data = profile.generate_bio()
         self.bio.text = "[color=000000]%s[/color]" % \
                                 profile.format_bio(self.bio_data)
-        image1 = None
 
         #print("stack")
+        # blank image
+        image1 = Image(source='images/blank.png', blank=True)
         for layer, index in enumerate(sorted(HEADSHOTS.keys())):
             options = len(HEADSHOTS[index][self.bio_data['gender']])
             if options == 0:
@@ -126,9 +143,9 @@ class BestCarousel(Carousel):
         # load the bios content into the module
         profile.load_bio_content()
 
-        image = self._load_headshot()
+        # set up the slide widgets in the carousel
         self.add_widget(Image(source='images/Button_Cross.png'))
-        self.add_widget(image)
+        self.add_widget(Image(source='images/blank.png', blank=True))
         self.add_widget(Image(source='images/Button_Heart.png'))
         self.index = 1
 
