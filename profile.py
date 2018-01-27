@@ -9,8 +9,8 @@ quotes_quips_lyrics_list = []
 jobs_list = []
 looking_for_list = []
 songs_list = []
-male_name_list = []
-female_name_list = []
+male_names_list = []
+female_names_list = []
 
 def has_sti():
     if random.randint(1,100) <= STI_CHANCE:
