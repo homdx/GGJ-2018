@@ -67,6 +67,9 @@ class BestCarousel(Carousel):
 
     def _load_headshot(self):
 
+        self.bio_data = profile.generate_bio()
+        self.bio.text = "[color=000000]%s[/color]" % \
+                                profile.format_bio(self.bio_data)
         image1 = None
 
         #print("stack")
@@ -103,8 +106,11 @@ class BestCarousel(Carousel):
         self.update_widget(2, Image(source='images/Button_Heart.png'))
         self.index = 1
 
-    def __init__(self, **kwargs):
+    def __init__(self, bio, **kwargs):
         print("__init__")
+
+        self.bio = bio
+
         # load the audio files
         self.swiping_music = SoundLoader.load('assets/audio/swiping_music.mp3')
         self.swiping_music.loop = True
@@ -112,7 +118,12 @@ class BestCarousel(Carousel):
         self.swiping_music.play()
         self.good_swipe = SoundLoader.load('assets/audio/oh_yeah_1.wav')
         self.bad_swipe = SoundLoader.load('assets/audio/boo_1.wav')
+
         super(BestCarousel, self).__init__(**kwargs)
+
+        # load the bios content into the module
+        profile.load_bio_content()
+
         image = self._load_headshot()
         self.add_widget(Image(source='images/Button_Cross.png'))
         self.add_widget(image)
@@ -125,9 +136,6 @@ class TextBox(Label):
 class StinderApp(App):
 
     def build(self):
-
-        # load the bios
-        profile.load_bio_content()
 
         # build head shot file list
         match = re.compile(r'([0-9]+)_([0-9]+)_.*\.png')
@@ -150,8 +158,9 @@ class StinderApp(App):
         Window.size = (Window.height / 2, Window.height)
 
         root = BoxLayout(orientation='vertical')
+        self.bio = TextBox(text="" , markup=True, font_size='20sp')
 
-        self.carousel = BestCarousel(
+        self.carousel = BestCarousel(self.bio,
                 direction='right', min_move=0.4, loop=True)
 
         root.add_widget(self.carousel)
@@ -159,11 +168,6 @@ class StinderApp(App):
         bio = BoxLayout(orientation='vertical')
 
         root.add_widget(bio)
-
-        bio_data = profile.generate_bio()
-        print(bio_data['name'])
-        self.bio = TextBox(text="[color=000000]%s[/color]" %
-            profile.format_bio(bio_data), markup=True, font_size='20sp')
 
         bio.add_widget(self.bio)
 
