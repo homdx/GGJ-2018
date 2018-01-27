@@ -205,15 +205,24 @@ class StinderApp(App):
 
         bio.add_widget(self.bio)
 
+        # Initialise score and timer
         self.new_timer()
+        self.new_score()
+
+        # Start decreasing the timer every 1 second
         Clock.schedule_interval(self.decrease_timer, 1)
 
         return root
 
+    def new_score(self):
+        self.score = 0
+
+    def increase_score(self):
+        self.score += 1
+
     def decrease_timer(self, dt):
         if self.timer_value > 0:
-            self.timer_value = self.timer_value - 1
-            print(self.timer_value)
+            self.timer_value -= 1
 
     def new_timer(self):
         self.timer_value = 120
