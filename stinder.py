@@ -21,7 +21,9 @@ GENDER = {
 
 good_swipe = []
 bad_swipe = []
-swiping_music = None
+swiping_loop = None
+transition_music = None
+menu_music = None
 
 class Image(BaseImage):
     def __init__(self, blank=False, allow_stretch=True, keep_ratio=True, **kwargs):
@@ -74,6 +76,11 @@ class BestCarousel(Carousel):
     def on_index(self, *args):
         super(BestCarousel, self).on_index(*args)
         self._next_item()
+
+    def play_loop_music(self):
+        global swiping_loop
+        swiping_loop.volume = 0.1
+        swiping_loop.play()
 
     def update_widget(self, index, widget):
 
@@ -136,16 +143,41 @@ class BestCarousel(Carousel):
         self.bio = bio
 
         # load the moosic
-        global swiping_music
-        swiping_music = SoundLoader.load('assets/audio/swiping_music.mp3')
-        swiping_music.loop = True
-        swiping_music.volume = 0.2
-        swiping_music.play()
+        global menu_music, transition_music, swiping_loop
+        menu_music = SoundLoader.load('assets/audio/menu_music.mp3')
+        menu_music.loop = True
+        menu_music.volume = 0.2
+        swiping_loop = SoundLoader.load('assets/audio/swiping_loop.wav')
+        swiping_loop.loop = False
+        swiping_loop.volume = 0.1
+        swiping_loop.on_stop = self.play_loop_music
+        transition_music = SoundLoader.load('assets/audio/loop_transition.wav')
+        transition_music.loop = False
+        transition_music.volume = 0.1
+        transition_music.on_stop = self.play_loop_music
+
+        # play the transition music
+        transition_music.play()
 
         # Load the audio effect
         global good_swipe, bad_swipe
         good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_1.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_2.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_3.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_4.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_5.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_6.wav'))
+        good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_7.wav'))
         bad_swipe.append(SoundLoader.load('assets/audio/boo_1.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_2.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_3.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_4.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_5.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_6.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_7.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_8.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_9.wav'))
+        bad_swipe.append(SoundLoader.load('assets/audio/boo_10.wav'))
 
         # call the superclass init function
         super(BestCarousel, self).__init__(**kwargs)
