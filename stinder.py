@@ -63,7 +63,7 @@ class rootWidget(BoxLayout):
                         'filename':'images/%s' % filename,
                 })
 
-        root = BetterBoxLayout(orientation='vertical')
+        root = Game(orientation='vertical')
         self.bio = TextBox(text="" , markup=True, font_size='20sp')
 
         self.carousel = BestCarousel(self.bio,
@@ -253,9 +253,20 @@ class BestCarousel(Carousel):
         self.add_widget(Image(source='images/Button_Heart.png'))
         self.index = 1
 
+# helper widgets
 
 class BetterBoxLayout(BoxLayout):
     pass
+
+class TextBox(Label):
+    pass
+
+# the widget the game runs in
+
+class Game(BetterBoxLayout):
+    pass
+
+# the spash widget
 
 class StartSplash(Image):
     def __init__(self, **kwargs):
@@ -266,9 +277,6 @@ class StartGameButton(Button):
         window = self.get_root_window()
         root = window.children[0]
         root.run_game()
-
-class TextBox(Label):
-    pass
 
 class StinderApp(App):
 
