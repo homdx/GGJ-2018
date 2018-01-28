@@ -22,6 +22,7 @@ GENDER = {
 
 good_swipe = []
 bad_swipe = []
+win_music = None
 swiping_loop = None
 transition_music = None
 menu_music = None
@@ -76,6 +77,8 @@ class rootWidget(BoxLayout):
         self.clear_windows()
 
         self.add_widget(Victory(source="images/Victory.png"))
+        global win_music
+        win_music.play()
 
     def lose_screen(self, sti):
         self.clear_windows()
@@ -314,7 +317,7 @@ class BestCarousel(Carousel):
         swiping_loop.play()
 
         # Load the audio effects
-        global good_swipe, bad_swipe, wilhelm
+        global good_swipe, bad_swipe, wilhelm, win_music
         good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_1.wav'))
         good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_2.wav'))
         good_swipe.append(SoundLoader.load('assets/audio/oh_yeah_3.wav'))
@@ -334,6 +337,7 @@ class BestCarousel(Carousel):
         bad_swipe.append(SoundLoader.load('assets/audio/boo_9.wav'))
         bad_swipe.append(SoundLoader.load('assets/audio/boo_10.wav'))
         wilhelm = SoundLoader.load('assets/audio/wilhelm.wav')
+        win_music = SoundLoader.load('assets/audio/victory_sex.wav')
 
         # call the superclass init function
         super(BestCarousel, self).__init__(**kwargs)
@@ -397,9 +401,9 @@ class StartSplash(Image):
 class LoseScreen(BetterBoxLayout):
     def __init__(self, sti, **kwargs):
         super(LoseScreen, self).__init__(**kwargs)
-        lose_reason = """Oh no, that person has an STI:
+        lose_reason = """Oh no, that last person had an STI!
 
-%s
+Reason: %s
 
 %s""" % sti
         txt = TextBox(text="[color=000000]%s[/color]" % lose_reason,
