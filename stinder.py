@@ -31,11 +31,16 @@ class rootWidget(BoxLayout):
     def __init__(self, **kwargs):
         super(rootWidget, self).__init__(**kwargs)
 
+    def update_score(self):
+        self.score_w.text = "[color=000000]Score: %s[/color]" % self.score
+
     def new_score(self):
         self.score = 0
+        self.update_score()
 
     def increase_score(self):
         self.score += 1
+        self.update_score()
 
     def decrease_timer(self, dt):
         self.timer_value -= 1
@@ -67,15 +72,17 @@ class rootWidget(BoxLayout):
 
         self.add_widget(start_splash)
 
+    def show_victory(self):
+        self.clear_windows()
+
+        self.add_widget(StartSplash(source="images/Victory.png"))
+
     def lose_screen(self, sti):
         self.clear_windows()
 
         self.add_widget(LoseScreen(sti))
 
     def run_game(self):
-        # Initialise score and timer
-        self.new_timer()
-        self.new_score()
 
         # Start decreasing the timer every 1 second
         self.clock = Clock.schedule_interval(self.decrease_timer, 1)
@@ -102,9 +109,20 @@ class rootWidget(BoxLayout):
 
         game = Game(orientation='vertical')
 
+        b = BetterBoxLayout(orientation='horizontal', size_hint=(1, 0.05))
+
         self.timer = TextBox(text="",
                 markup=True, font_size='20sp')
-        game.add_widget(self.timer)
+        b.add_widget(self.timer)
+
+        self.score_w = TextBox(text="", markup=True, font_size='20sp')
+        b.add_widget(self.score_w)
+
+        # Initialise score and timer
+        self.new_timer()
+        self.new_score()
+
+        game.add_widget(b)
 
         self.bio = TextBox(text="" , markup=True, font_size='20sp')
 
@@ -249,10 +267,14 @@ class BestCarousel(Carousel):
                 wilhelm.play()
                 sti = random.choice(self.bio_data['sti_list'])
                 root.lose_screen(sti)
+                return
             else:
                 # GOOD
                 random.choice(good_swipe).play()
                 root.increase_score()
+                if root.score == 1:
+                    root.show_victory()
+                    return
         elif self.index == 2:
             # DECLINE
             random.choice(bad_swipe).play()
