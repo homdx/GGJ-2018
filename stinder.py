@@ -277,7 +277,7 @@ class BestCarousel(Carousel):
                 # GOOD
                 random.choice(good_swipe).play()
                 root.increase_score()
-                if root.score == 1:
+                if root.score == 10:
                     root.show_victory()
                     return
         elif self.index == 2:
@@ -377,7 +377,7 @@ class StartSplash(Image):
         super(StartSplash, self).on_touch_up(val)
         window = self.get_root_window()
         root = window.children[0]
-        root.run_game()
+        root.show_splash()
 
 # the loss widget
 
@@ -392,7 +392,6 @@ class LoseScreen(BetterBoxLayout):
         txt = TextBox(text="[color=000000]%s[/color]" % lose_reason,
                 markup=True, font_size='20sp', pos_hint={'y': 0.5, 'centre_x':0.3})
         self.add_widget(txt)
-        print(dir(self))
 
     def on_touch_up(self, val):
         super(LoseScreen, self).on_touch_up(val)
@@ -407,7 +406,7 @@ class StinderApp(App):
     def build(self):
         root = rootWidget()
 
-        Window.size = (Window.height / 2, Window.height)
+        Window.size = (400, 800)
 
         # set the background to white
         Window.clearcolor = (1, 1, 1, 0)
