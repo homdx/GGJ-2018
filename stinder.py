@@ -42,12 +42,12 @@ class rootWidget(BoxLayout):
         self.timer.text = "[color=000000]Seconds Remaining: %s[/color]" % self.timer_value
         if self.timer_value == 0:
             self.show_splash()
-            self.clock.cancel()
 
     def new_timer(self):
         self.timer_value = 10
 
     def clear_windows(self):
+        Clock.unschedule(self.decrease_timer)
         if swiping_loop != None:
             def a():
                 pass
@@ -77,9 +77,6 @@ class rootWidget(BoxLayout):
         self.new_timer()
         self.new_score()
 
-        # Start decreasing the timer every 1 second
-        self.clock = Clock.schedule_interval(self.decrease_timer, 1)
-
         # build head shot file list
         match = re.compile(r'([0-9]+)_([0-9]+)_.*\.png')
         for filename in os.listdir('images'):
@@ -100,6 +97,8 @@ class rootWidget(BoxLayout):
                         'filename':'images/%s' % filename,
                 })
 
+        self.clear_windows()
+
         game = Game(orientation='vertical')
 
         self.timer = TextBox(text="",
@@ -119,7 +118,10 @@ class rootWidget(BoxLayout):
 
         bio.add_widget(self.bio)
 
-        self.clear_windows()
+
+
+        # Start decreasing the timer every 1 second
+        self.clock = Clock.schedule_interval(self.decrease_timer, 1)
 
         self.add_widget(game)
 
@@ -389,4 +391,3 @@ class StinderApp(App):
         root.show_splash()
 
         return root
-

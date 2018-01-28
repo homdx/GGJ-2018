@@ -103,7 +103,7 @@ def load_bio_content():
 def generate_bio():
 
     # Random chance to get one of the easter egg profiles
-    if random.randint(1,100) == 10:
+    if random.randint(1,100) < 2:
         return random.choice(easter_eggs)
 
     # Initialise the bio
