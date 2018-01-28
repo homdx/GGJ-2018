@@ -75,7 +75,7 @@ class rootWidget(BoxLayout):
     def show_victory(self):
         self.clear_windows()
 
-        self.add_widget(StartSplash(source="images/Victory.png"))
+        self.add_widget(Victory(source="images/Victory.png"))
 
     def lose_screen(self, sti):
         self.clear_windows()
@@ -359,6 +359,23 @@ class TextBox(Label):
 class Game(BetterBoxLayout):
     pass
 
+# the victory widget
+
+class Victory(Image):
+    def __init__(self, **kwargs):
+        super(Victory, self).__init__(**kwargs)
+        global menu_music
+        menu_music = SoundLoader.load('assets/audio/menu_music.mp3')
+        menu_music.volume = 0.1
+        menu_music.play()
+
+    def on_touch_up(self, val):
+        super(Victory, self).on_touch_up(val)
+        window = self.get_root_window()
+        root = window.children[0]
+        root.show_splash()
+
+
 # the splash widget
 
 class StartSplash(Image):
@@ -373,7 +390,7 @@ class StartSplash(Image):
         super(StartSplash, self).on_touch_up(val)
         window = self.get_root_window()
         root = window.children[0]
-        root.show_splash()
+        root.run_game()
 
 # the loss widget
 
