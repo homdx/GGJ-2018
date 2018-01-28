@@ -373,7 +373,7 @@ class StartSplash(Image):
         super(StartSplash, self).on_touch_up(val)
         window = self.get_root_window()
         root = window.children[0]
-        root.run_game()
+        root.show_splash()
 
 # the loss widget
 
