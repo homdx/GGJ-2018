@@ -359,7 +359,7 @@ class TextBox(Label):
 class Game(BetterBoxLayout):
     pass
 
-# the spash widget
+# the splash widget
 
 class StartSplash(Image):
     def __init__(self, **kwargs):
@@ -369,22 +369,13 @@ class StartSplash(Image):
         menu_music.volume = 0.1
         menu_music.play()
 
-class StartGameButton(Button):
-    def on_press(self):
+    def on_touch_up(self, val):
+        super(StartSplash, self).on_touch_up(val)
         window = self.get_root_window()
         root = window.children[0]
         root.run_game()
 
 # the loss widget
-
-class LoseText(TextBox):
-    pass
-
-class HomeButton(Button):
-    def on_press(self):
-        window = self.get_root_window()
-        root = window.children[0]
-        root.show_splash()
 
 class LoseScreen(BetterBoxLayout):
     def __init__(self, sti, **kwargs):
@@ -397,6 +388,13 @@ class LoseScreen(BetterBoxLayout):
         txt = TextBox(text="[color=000000]%s[/color]" % lose_reason,
                 markup=True, font_size='20sp', pos_hint={'y': 0.5, 'centre_x':0.3})
         self.add_widget(txt)
+        print(dir(self))
+
+    def on_touch_up(self, val):
+        super(LoseScreen, self).on_touch_up(val)
+        window = self.get_root_window()
+        root = window.children[0]
+        root.show_splash()
 
 # app start class
 

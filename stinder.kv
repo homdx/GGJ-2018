@@ -1,35 +1,5 @@
 #:kivy 1.0.9
 
-<HomeButton>:
-    size: self.parent.size
-	background_color: 100,100,100,0
-
-<LoseScreen>:
-	size: root.size
-	pos: -(root.width / 2), 0
-	background_color: 100,100,100,255
-    canvas:
-        Rectangle:
-			pos: - (root.width /2),0
-			size: root.size
-	HomeButton:
-		center: 0,0
-
-<LoseText>:
-	size: root.size
-    canvas:
-        Rectangle:
-			size: root.size
-
-<StartGameButton>:
-    size: self.parent.size
-	background_color: 100,100,100,0
-
-<StartSplash>:
-    size: root.size
-	StartGameButton:
-		center: 0,0
-
 <TextBox>:
     size_hint_y: None
     text_size: self.width, None
