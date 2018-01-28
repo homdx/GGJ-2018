@@ -45,7 +45,7 @@ class rootWidget(BoxLayout):
             self.clock.cancel()
 
     def new_timer(self):
-        self.timer_value = 10
+        self.timer_value = 120
 
     def clear_windows(self):
         if swiping_loop != None:
