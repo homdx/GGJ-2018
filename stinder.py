@@ -384,9 +384,9 @@ class StartSplash(Image):
 class LoseScreen(BetterBoxLayout):
     def __init__(self, sti, **kwargs):
         super(LoseScreen, self).__init__(**kwargs)
-        lose_reason = """Oh no, that person has an STI:
+        lose_reason = """Oh no, that last person had an STI!
 
-%s
+Reason: %s
 
 %s""" % sti
         txt = TextBox(text="[color=000000]%s[/color]" % lose_reason,
