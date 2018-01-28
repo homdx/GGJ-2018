@@ -25,12 +25,37 @@ bad_swipe = []
 swiping_loop = None
 transition_music = None
 menu_music = None
+wilhelm = None
 
 class rootWidget(BoxLayout):
     def __init__(self, **kwargs):
         super(rootWidget, self).__init__(**kwargs)
 
+    def new_score(self):
+        self.score = 0
+
+    def increase_score(self):
+        self.score += 1
+
+    def decrease_timer(self, dt):
+        self.timer_value -= 1
+        self.timer.text = "[color=000000]Seconds Remaining: %s[/color]" % self.timer_value
+        if self.timer_value == 0:
+            self.show_splash()
+            self.clock.cancel()
+
+    def new_timer(self):
+        self.timer_value = 10
+
     def clear_windows(self):
+        if swiping_loop != None:
+            def a():
+                pass
+            swiping_loop.on_stop = a
+            swiping_loop.stop()
+        if menu_music != None:
+            menu_music.stop()
+
         for child in self.children:
             self.remove_widget(child)
 
@@ -42,7 +67,19 @@ class rootWidget(BoxLayout):
 
         self.add_widget(start_splash)
 
+    def lose_screen(self, sti):
+        self.clear_windows()
+
+        self.add_widget(LoseScreen(sti))
+
     def run_game(self):
+        # Initialise score and timer
+        self.new_timer()
+        self.new_score()
+
+        # Start decreasing the timer every 1 second
+        self.clock = Clock.schedule_interval(self.decrease_timer, 1)
+
         # build head shot file list
         match = re.compile(r'([0-9]+)_([0-9]+)_.*\.png')
         for filename in os.listdir('images'):
@@ -63,23 +100,28 @@ class rootWidget(BoxLayout):
                         'filename':'images/%s' % filename,
                 })
 
-        root = Game(orientation='vertical')
+        game = Game(orientation='vertical')
+
+        self.timer = TextBox(text="",
+                markup=True, font_size='20sp')
+        game.add_widget(self.timer)
+
         self.bio = TextBox(text="" , markup=True, font_size='20sp')
 
-        self.carousel = BestCarousel(self.bio,
+        carousel = BestCarousel(self.bio,
                 direction='right', min_move=0.4, loop=True)
-
-        root.add_widget(self.carousel)
+        game.add_widget(carousel)
+        carousel.index = 1
 
         bio = BetterBoxLayout(orientation='vertical')
 
-        root.add_widget(bio)
+        game.add_widget(bio)
 
         bio.add_widget(self.bio)
 
         self.clear_windows()
 
-        self.add_widget(root)
+        self.add_widget(game)
 
 class Image(BaseImage):
     def __init__(self, blank=False, allow_stretch=True, keep_ratio=True, **kwargs):
@@ -182,9 +224,24 @@ class BestCarousel(Carousel):
             # game isn't ready yet
             return
         global good_swipe, bad_swipe
-        if self.index == 2:
-            random.choice(good_swipe).play()
-        elif self.index == 0:
+        if self.index == 0:
+            # ACCEPT
+            window = self.get_root_window()
+            if window == None:
+                print("WARNING: This shouldn't happen :(")
+                return
+            root = window.children[0]
+            if len(self.bio_data['sti_list']) > 0:
+                # BAD, LOST GAME
+                wilhelm.play()
+                sti = random.choice(self.bio_data['sti_list'])
+                root.lose_screen(sti)
+            else:
+                # GOOD
+                random.choice(good_swipe).play()
+                root.increase_score()
+        elif self.index == 2:
+            # DECLINE
             random.choice(bad_swipe).play()
 
         # load next headshot
@@ -239,7 +296,7 @@ class BestCarousel(Carousel):
         bad_swipe.append(SoundLoader.load('assets/audio/boo_8.wav'))
         bad_swipe.append(SoundLoader.load('assets/audio/boo_9.wav'))
         bad_swipe.append(SoundLoader.load('assets/audio/boo_10.wav'))
-        welhelm = SoundLoader.load('assets/audio/wilhelm.wav')
+        wilhelm = SoundLoader.load('assets/audio/wilhelm.wav')
 
         # call the superclass init function
         super(BestCarousel, self).__init__(**kwargs)
@@ -248,10 +305,9 @@ class BestCarousel(Carousel):
         profile.load_bio_content()
 
         # set up the slide widgets in the carousel
-        self.add_widget(Image(source='images/Button_Cross.png'))
-        self.add_widget(Image(source='images/blank.png', blank=True))
         self.add_widget(Image(source='images/Button_Heart.png'))
-        self.index = 1
+        self.add_widget(Image(source='images/blank.png', blank=True))
+        self.add_widget(Image(source='images/Button_Cross.png'))
 
 # helper widgets
 
@@ -282,6 +338,31 @@ class StartGameButton(Button):
         root = window.children[0]
         root.run_game()
 
+# the loss widget
+
+class LoseText(TextBox):
+    pass
+
+class HomeButton(Button):
+    def on_press(self):
+        window = self.get_root_window()
+        root = window.children[0]
+        root.show_splash()
+
+class LoseScreen(BetterBoxLayout):
+    def __init__(self, sti, **kwargs):
+        super(LoseScreen, self).__init__(**kwargs)
+        lose_reason = """Oh no, that person has an STI:
+
+%s
+
+%s""" % sti
+        txt = TextBox(text="[color=000000]%s[/color]" % lose_reason,
+                markup=True, font_size='20sp', pos_hint={'y': 0.5, 'centre_x':0.3})
+        self.add_widget(txt)
+
+# app start class
+
 class StinderApp(App):
 
     def build(self):
@@ -294,24 +375,5 @@ class StinderApp(App):
 
         root.show_splash()
 
-        # Initialise score and timer
-        self.new_timer()
-        self.new_score()
-
-        # Start decreasing the timer every 1 second
-        Clock.schedule_interval(self.decrease_timer, 1)
-
         return root
 
-    def new_score(self):
-        self.score = 0
-
-    def increase_score(self):
-        self.score += 1
-
-    def decrease_timer(self, dt):
-        if self.timer_value > 0:
-            self.timer_value -= 1
-
-    def new_timer(self):
-        self.timer_value = 120
