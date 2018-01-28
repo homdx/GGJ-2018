@@ -388,7 +388,6 @@ class LoseScreen(BetterBoxLayout):
         txt = TextBox(text="[color=000000]%s[/color]" % lose_reason,
                 markup=True, font_size='20sp', pos_hint={'y': 0.5, 'centre_x':0.3})
         self.add_widget(txt)
-        print(dir(self))
 
     def on_touch_up(self, val):
         super(LoseScreen, self).on_touch_up(val)
