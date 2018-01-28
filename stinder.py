@@ -318,9 +318,9 @@ class BestCarousel(Carousel):
         profile.load_bio_content()
 
         # set up the slide widgets in the carousel
-        self.add_widget(Image(source='images/Button_Heart.png'))
+        self.add_widget(Image(source='images/Button_Heart_1.png'))
         self.add_widget(Image(source='images/blank.png', blank=True))
-        self.add_widget(Image(source='images/Button_Cross.png'))
+        self.add_widget(Image(source='images/Button_Cross_1.png'))
 
 # helper widgets
 
