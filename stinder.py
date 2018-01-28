@@ -62,7 +62,7 @@ class rootWidget(BoxLayout):
     def show_splash(self):
         self.clear_windows()
 
-        start_splash = StartSplash(source="images/STinder.png")
+        start_splash = StartSplash(source="images/Title.png")
 
 
         self.add_widget(start_splash)
