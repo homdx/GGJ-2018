@@ -220,6 +220,9 @@ class BestCarousel(Carousel):
 
         # build avatar
         for layer, index in enumerate(sorted(HEADSHOTS.keys())):
+            if index > 50:
+                if random.randrange(0, 10) > 0:
+                    continue
             options = len(HEADSHOTS[index][self.bio_data['gender']])
             if options == 0:
                 continue
