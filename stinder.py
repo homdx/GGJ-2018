@@ -208,6 +208,16 @@ class BestCarousel(Carousel):
         # blank image
         image1 = Image(source='images/blank.png', blank=True)
 
+        #print easter_egg ronnie
+        if self.bio_data['gender'] == 'ronnie':
+            image1 = Image(source='images/ronnie.jpg.jpg')
+            return image1
+
+        #print easter_egg putin
+        if self.bio_data['gender'] == 'putin':
+            image1 = Image(source='images/putin.jpg')
+            return image1
+
         # build avatar
         for layer, index in enumerate(sorted(HEADSHOTS.keys())):
             options = len(HEADSHOTS[index][self.bio_data['gender']])
