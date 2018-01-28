@@ -210,7 +210,7 @@ class BestCarousel(Carousel):
 
         #print easter_egg ronnie
         if self.bio_data['gender'] == 'ronnie':
-            image1 = Image(source='images/ronnie.jpg.jpg')
+            image1 = Image(source='images/ronnie.jpg')
             return image1
 
         #print easter_egg putin
