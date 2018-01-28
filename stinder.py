@@ -277,7 +277,7 @@ class BestCarousel(Carousel):
                 # GOOD
                 random.choice(good_swipe).play()
                 root.increase_score()
-                if root.score == 10:
+                if root.score == 5:
                     root.show_victory()
                     return
         elif self.index == 2:
