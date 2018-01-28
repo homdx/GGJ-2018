@@ -402,7 +402,7 @@ class StinderApp(App):
     def build(self):
         root = rootWidget()
 
-        Window.size = (Window.height / 2, Window.height)
+        Window.size = (400, 800)
 
         # set the background to white
         Window.clearcolor = (1, 1, 1, 0)
