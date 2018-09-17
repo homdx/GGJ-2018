@@ -66,7 +66,7 @@ USER ${USER}
 
 COPY . .
 
-RUN buildozer android debug || /bin/true
+RUN buildozer android debug || cp /home/user/hostcwd/.buildozer/android/platform/build/dists/StinderApp/bin/Stinder-0.1-debug.apk ./
 
 CMD tail -f /var/log/faillog
 
